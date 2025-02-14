@@ -1,14 +1,27 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class CalendarHandling {
+public class CalendarHandling2 {
     public static void main(String[] args) {
+
+
+        selectDate("23", "July", "2022");
+
+    }
+
+    public static String[] getMonthYear(String monthYearVal) {
+        return monthYearVal.split(" ");
+    }
+
+    public static void selectDate(String exDay, String exMonth, String exYear) {
 
         WebDriverManager.firefoxdriver().clearDriverCache().setup();
         WebDriver driver = new FirefoxDriver();
@@ -19,7 +32,8 @@ public class CalendarHandling {
         new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("ui-datepicker-calendar")));
 
 
-       String monthYearVal =  driver.findElement(By.className("ui-datepicker-title")).getText();
+        String monthYearVal =  driver.findElement(By.className("ui-datepicker-title")).getText();
+
 
         System.out.println(monthYearVal);// February 2025
 
@@ -29,18 +43,21 @@ public class CalendarHandling {
         System.out.println(month);
         System.out.println(year);
 
-        while (!(month.equals("June") && year.equals("2022"))) {
+        while (!(getMonthYear(monthYearVal)[0].equals(exMonth)
+                &&
+                getMonthYear(monthYearVal)[1].equals(exYear))) {
+
             driver.findElement(By.xpath("//a[@title='Prev']")).click();
             monthYearVal = driver.findElement(By.className("ui-datepicker-title")).getText();
 
 
             System.out.println(monthYearVal);// February 2022
 
-            month = monthYearVal.split(" ")[0].trim();
-            year = monthYearVal.split(" ")[1].trim();
+
+            driver.findElement(By.xpath("//a[text() = '" + exDay + "']")).click();
+
         }
 
-        driver.findElement(By.xpath("//a[text() = '21']")).click();
 
     }
 }
